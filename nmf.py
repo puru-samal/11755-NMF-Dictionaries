@@ -11,9 +11,29 @@ import torchaudio
 import os
 
 
-def train_nmf_dictionary(dataloader:torch.utils.data.DataLoader, K:int, train_target:Literal['target', 'background']='target', device:str='cpu', n_iter:int=100, tol:float=1e-4, beta:float=1.0, alpha:float=0.0, l1_ratio:float=0.0):
+def train_nmf_dictionary(
+        dataloader:torch.utils.data.DataLoader, 
+        K:int, 
+        train_target:Literal['target', 'background']='target', 
+        device:str='cpu', 
+        n_iter:int=100, 
+        tol:float=1e-4, 
+        beta:float=1.0, 
+        alpha:float=0.0, 
+        l1_ratio:float=0.0
+    ):
     '''
     Train the NMF dictionary using torchnmf.
+    Args:
+        dataloader: torch.utils.data.DataLoader,
+        K: int,
+        train_target: Literal['target', 'background'],
+        device: str,
+        n_iter: int,
+        tol: float,
+        beta: float,
+        alpha: float,
+        l1_ratio: float
     '''
     first_batch = next(iter(dataloader))[0]
     F = first_batch.shape[1]
@@ -47,7 +67,18 @@ def train_nmf_dictionary(dataloader:torch.utils.data.DataLoader, K:int, train_ta
     return result
 
 
-def test_separation(dataloader:torch.utils.data.DataLoader, B_target:torch.Tensor, B_background:torch.Tensor, decode_fn:Callable, device:str='cpu', n_iter:int=100, beta:float=2.0, alpha:float=0.0, l1_ratio:float=0.0, results_dir:str=None):
+def test_separation(
+        dataloader:torch.utils.data.DataLoader, 
+        B_target:torch.Tensor, 
+        B_background:torch.Tensor, 
+        decode_fn:Callable, 
+        device:str='cpu', 
+        n_iter:int=100, 
+        beta:float=2.0, 
+        alpha:float=0.0, 
+        l1_ratio:float=0.0, 
+        results_dir:str=None
+    ):
     '''
     Test the separation of the NMF dictionary.
     '''
@@ -91,13 +122,13 @@ def test_separation(dataloader:torch.utils.data.DataLoader, B_target:torch.Tenso
         torchaudio.save(f'{results_dir}/audio/predicted_background_{i}.wav', predicted_background_audio.unsqueeze(0), 16000, channels_first=True)
 
         # Save target and background masks
-        plt.imsave(f'{results_dir}/masks/target_mask_{i}.png', target_mask.detach().cpu().numpy(), cmap='viridis')
-        plt.imsave(f'{results_dir}/masks/background_mask_{i}.png', background_mask.detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/target_mask_{i}.png', target_mask.detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', background_mask.detach().cpu().numpy(), cmap='viridis')
 
         # Evaluate on CPU
         reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).numpy()
         prediction = torch.stack([predicted_target_audio.reshape(-1,1), predicted_background_audio.reshape(-1,1)]).numpy()
-        print(f"reference.shape: {reference.shape}, prediction.shape: {prediction.shape}")
+
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
         scores[i] = {
