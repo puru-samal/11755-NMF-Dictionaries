@@ -106,7 +106,7 @@ def test_separation(
         model = NMF(Vshape=(X.shape), rank=B_separation.shape[1], H=B_separation, trainable_H=False).to(device)
         # Fit NMF model
         model.fit(X.to(device), beta=beta, max_iter=n_iter, verbose=True, alpha=alpha, l1_ratio=l1_ratio)
-        W = model.W.detach().cpu().T
+        W = model.W.T
         # Compute masks and predictions on device
         X_hat = B_separation @ W
         target_mask = (B_separation[:, target_slice] @ W[target_slice, :]) / X_hat
