@@ -1,0 +1,32 @@
+## Dataset ---------------------------------------------------------------------
+dataset:
+    data_dir: "musdb18_subset"  
+    target: "vocals" # "vocals", "drums", "bass", "other"
+    sample_rate: 16000
+## --------------------------------------------------------------------------
+
+## Transform -----------------------------------------------------------------
+transform:
+    n_fft: 2048
+    hop_length: 512
+    center: True
+    pad_mode: constant
+## --------------------------------------------------------------------------
+
+## DataLoader --------------------------------------------------------------
+dataloader:
+    batch_size: 1
+    shuffle: False
+    num_workers: 0
+## -------------------------------------------------------------------------- 
+
+## NMF -----------------------------------------------------------------------
+nmf:
+    train_target: "target" # "target", "background"
+    target_K: 256          # Number of components
+    background_K: 512      # Number of components
+    n_iter: 1000   # Number of iterations
+    tol: 0.0001    # Tolerance
+    beta: 1.0      # 0: Itakura-Saito, 1: KL, 0 < beta < 1: Generalized KL  
+    alpha: 1.0     # L1 regularization
+## --------------------------------------------------------------------------
