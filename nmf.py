@@ -127,8 +127,8 @@ def test_separation(
         plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', background_mask.detach().cpu().numpy(), cmap='viridis')
 
         # Evaluate on CPU
-        reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).numpy()
-        prediction = torch.stack([predicted_target_audio.reshape(-1,1), predicted_background_audio.reshape(-1,1)]).numpy()
+        reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).detach().cpu().numpy()
+        prediction = torch.stack([predicted_target_audio.reshape(-1,1), predicted_background_audio.reshape(-1,1)]).detach().cpu().numpy()
 
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
