@@ -104,6 +104,7 @@ def main(config_path):
         tol         = config['nmf']['tol'], 
         beta        = config['nmf']['beta'],
         alpha       = config['nmf']['alpha'],
+        l1_ratio    = config['nmf']['l1_ratio'],
     )
     print("Target NMF dictionary trained\n")
     ## --------------------------------------------------------------------------
@@ -119,6 +120,7 @@ def main(config_path):
         tol         = config['nmf']['tol'], 
         beta        = config['nmf']['beta'],
         alpha       = config['nmf']['alpha'],
+        l1_ratio    = config['nmf']['l1_ratio'],
     )
     print("Background NMF dictionary trained\n")
     ## --------------------------------------------------------------------------   
@@ -136,8 +138,6 @@ def main(config_path):
 
     ## Test separation ----------------------------------------------------------
     print("Testing separation...")
-    print(f"B_target.shape: {B_target.shape}, B_background.shape: {B_background.shape}")
-
     scores = test_separation(
         dataloader  = test_dataloader,
         B_target    = B_target,
@@ -148,15 +148,20 @@ def main(config_path):
         beta        = config['nmf']['beta'],
         alpha       = config['nmf']['alpha'],
         results_dir = f'results/{id}',
+        l1_ratio    = config['nmf']['l1_ratio'],
     )
     print("Separation tested\n")
-    # print mean scores of each metric
-    for metric in scores.keys():
-        print(f"{metric}: {torch.tensor(scores[metric]).mean().item()}")   
+    # print scores
+    for i, values in scores.items():
+        print(f"{i}:")
+        for metric, value in values.items():
+            print(f"    {metric}: {value}")
+        print("\n")
 
     ## --------------------------------------------------------------------------
 
-    ## Save scores --------------------------------------------------------------
+    ## Print and Save scores --------------------------------------------------------------
+    # dump to yaml file   
     with open(f'results/{id}/scores.yaml', 'w') as file:
         yaml.dump(scores, file)
     ## --------------------------------------------------------------------------   
