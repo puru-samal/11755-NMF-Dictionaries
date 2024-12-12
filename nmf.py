@@ -51,10 +51,11 @@ def train_nmf_dictionary(
         X = torch.abs(X) + 1e-12
 
         # Initialize NMF model
-        model = NMF(Vshape=(X.shape), rank=K)
+        model = NMF(Vshape=(X.shape), rank=K).to(device)
         # Fit NMF model
         model.fit(X.to(device), beta=beta, tol=tol, max_iter=n_iter, verbose=True, alpha=alpha, l1_ratio=l1_ratio)
         B[i] = model.H.detach().cpu() # Store the dictionary
+        del model
         if device == 'cuda':
             torch.cuda.empty_cache()
 
@@ -102,7 +103,7 @@ def test_separation(
         X = torch.abs(X) + 1e-12
 
         # Initialize NMF model
-        model = NMF(Vshape=(X.shape), rank=B_separation.shape[1], H=B_separation, trainable_H=False)
+        model = NMF(Vshape=(X.shape), rank=B_separation.shape[1], H=B_separation, trainable_H=False).to(device)
         # Fit NMF model
         model.fit(X.to(device), beta=beta, max_iter=n_iter, verbose=True, alpha=alpha, l1_ratio=l1_ratio)
         W = model.W.detach().cpu().T
@@ -155,7 +156,7 @@ def test_separation(
         }
 
         # Clear iteration variables
-        del X, X_original, W, X_hat, target_mask, background_mask
+        del X, X_original, W, X_hat, target_mask, background_mask, model
         del predicted_target, predicted_background
         del target_audio, background_audio, predicted_target_audio, predicted_background_audio
         if device == 'cuda':
