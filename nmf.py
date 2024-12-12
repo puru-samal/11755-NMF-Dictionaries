@@ -103,10 +103,9 @@ def train_nmf_dictionary(dataloader:torch.utils.data.DataLoader, K:int, train_ta
             B, W = update(X, B, W, beta=beta, alpha=alpha)
             
             # Compute losses without transferring to CPU
-            with torch.cuda.amp.autocast(enabled=device=='cuda'):
-                X_hat = torch.matmul(B, W)
-                loss = loss_fn(X, X_hat)
-                recons_loss = recons_loss_fn(X, X_hat)
+            X_hat = torch.matmul(B, W)
+            loss = loss_fn(X, X_hat)
+            recons_loss = recons_loss_fn(X, X_hat)
             
             pbar.set_postfix({'beta_loss': f'{loss.item():.4f}', 'recons_loss': f'{recons_loss.item():.4f}'})
             
@@ -182,10 +181,9 @@ def test_separation(dataloader:torch.utils.data.DataLoader, B_target:torch.Tenso
             W = update_W(X, B_separation, W, beta=beta, alpha=alpha)
 
             # Compute losses without transferring to CPU
-            with torch.cuda.amp.autocast(enabled=device=='cuda'):
-                X_hat = torch.matmul(B_separation, W)
-                loss = loss_fn(X, X_hat)
-                recons_loss = recons_loss_fn(X, X_hat)
+            X_hat = torch.matmul(B_separation, W)
+            loss = loss_fn(X, X_hat)
+            recons_loss = recons_loss_fn(X, X_hat)
             
             pbar.set_postfix({'beta_loss': f'{loss.item():.4f}', 'recons_loss': f'{recons_loss.item():.4f}'})
 
