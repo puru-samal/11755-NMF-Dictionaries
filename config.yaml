@@ -23,10 +23,11 @@ dataloader:
 ## NMF -----------------------------------------------------------------------
 nmf:
     train_target: "target" # "target", "background"
-    target_K: 256          # Number of components
-    background_K: 512      # Number of components
-    n_iter: 1000   # Number of iterations
+    target_K: 24         # Number of components
+    background_K: 48      # Number of components
+    n_iter: 500    # Number of iterations
     tol: 0.0001    # Tolerance
     beta: 1.0      # 0: Itakura-Saito, 1: KL, 0 < beta < 1: Generalized KL  
     alpha: 1.0     # L1 regularization
+    background_K_semi: 16 # Number of components for semi-supervised separation
 ## --------------------------------------------------------------------------
