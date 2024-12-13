@@ -244,8 +244,8 @@ def test_separation_semi(dataloader:torch.utils.data.DataLoader, B_target:torch.
         scores['Perm_target'].append(perm.mean(axis=1)[0])
         scores['Perm_background'].append(perm.mean(axis=1)[1])
 
-        print(f"SDR_target: {round(float(scores['SDR_target'][0]), 2)}, ISR_target: {round(float(scores['ISR_target'][0]), 2)}, SIR_target: {round(float(scores['SIR_target'][0]), 2)}, SAR_target: {round(float(scores['SAR_target'][0]), 2)}, Perm_target: {round(float(scores['Perm_target'][0]), 2)}")
-        print(f"SDR_background: {round(float(scores['SDR_background'][0]), 2)}, ISR_background: {round(float(scores['ISR_background'][0]), 2)}, SIR_background: {round(float(scores['SIR_background'][0]), 2)}, SAR_background: {round(float(scores['SAR_background'][0]), 2)}, Perm_background: {round(float(scores['Perm_background'][0]), 2)}")
+        print(f"SDR_target: {round(float(scores['SDR_target'][-1]), 2)}, ISR_target: {round(float(scores['ISR_target'][-1]), 2)}, SIR_target: {round(float(scores['SIR_target'][-1]), 2)}, SAR_target: {round(float(scores['SAR_target'][-1]), 2)}, Perm_target: {round(float(scores['Perm_target'][-1]), 2)}")
+        print(f"SDR_background: {round(float(scores['SDR_background'][-1]), 2)}, ISR_background: {round(float(scores['ISR_background'][-1]), 2)}, SIR_background: {round(float(scores['SIR_background'][-1]), 2)}, SAR_background: {round(float(scores['SAR_background'][-1]), 2)}, Perm_background: {round(float(scores['Perm_background'][-1]), 2)}\n\n")
         
         # Clear iteration variables
         del X, X_original, W, X_hat, target_mask, background_mask
@@ -341,8 +341,8 @@ def test_separation(dataloader:torch.utils.data.DataLoader, B_target:torch.Tenso
         scores['Perm_target'].append(perm.mean(axis=1)[0])
         scores['Perm_background'].append(perm.mean(axis=1)[1])
 
-        print(f"SDR_target: {round(float(scores['SDR_target'][0]), 2)}, ISR_target: {round(float(scores['ISR_target'][0]), 2)}, SIR_target: {round(float(scores['SIR_target'][0]), 2)}, SAR_target: {round(float(scores['SAR_target'][0]), 2)}, Perm_target: {round(float(scores['Perm_target'][0]), 2)}")
-        print(f"SDR_background: {round(float(scores['SDR_background'][0]), 2)}, ISR_background: {round(float(scores['ISR_background'][0]), 2)}, SIR_background: {round(float(scores['SIR_background'][0]), 2)}, SAR_background: {round(float(scores['SAR_background'][0]), 2)}, Perm_background: {round(float(scores['Perm_background'][0]), 2)}")
+        print(f"SDR_target: {round(float(scores['SDR_target'][-1]), 2)}, ISR_target: {round(float(scores['ISR_target'][-1]), 2)}, SIR_target: {round(float(scores['SIR_target'][-1]), 2)}, SAR_target: {round(float(scores['SAR_target'][-1]), 2)}, Perm_target: {round(float(scores['Perm_target'][-1]), 2)}")
+        print(f"SDR_background: {round(float(scores['SDR_background'][-1]), 2)}, ISR_background: {round(float(scores['ISR_background'][-1]), 2)}, SIR_background: {round(float(scores['SIR_background'][-1]), 2)}, SAR_background: {round(float(scores['SAR_background'][-1]), 2)}, Perm_background: {round(float(scores['Perm_background'][-1]), 2)}\n\n")
         
         # Clear iteration variables
         del X, X_original, W, X_hat, target_mask, background_mask
