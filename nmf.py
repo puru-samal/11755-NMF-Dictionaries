@@ -9,7 +9,7 @@ import museval
 from typing import Callable
 import torchaudio
 import os
-
+import numpy as np
 
 def train_nmf_dictionary(
         dataloader:torch.utils.data.DataLoader, 
@@ -127,8 +127,8 @@ def test_separation(
         torchaudio.save(f'{results_dir}/audio/predicted_background_{i}.wav', predicted_background_audio.unsqueeze(0), 16000, channels_first=True)
 
         # Save target and background masks
-        plt.imsave(f'{results_dir}/plots/target_mask_{i}.png', predicted_target.detach().cpu().numpy(), cmap='viridis')
-        plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', predicted_background.detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/target_mask_{i}.png', torch.abs(predicted_target).detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', torch.abs(predicted_background).detach().cpu().numpy(), cmap='viridis')
 
         # Evaluate on CPU
         reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).detach().cpu().numpy()
@@ -137,11 +137,11 @@ def test_separation(
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
         # Remove nans   
-        sdr = sdr.nan_to_num()
-        isr = isr.nan_to_num()
-        sir = sir.nan_to_num()
-        sar = sar.nan_to_num()
-        perm = perm.nan_to_num()
+        sdr = np.nan_to_num(sdr)
+        isr = np.nan_to_num(isr)
+        sir = np.nan_to_num(sir)
+        sar = np.nan_to_num(sar)
+        perm = np.nan_to_num(perm)
         scores[i] = {
             'SDR': {
                 'target': round(float(sdr.mean(axis=1)[0]), 2),
