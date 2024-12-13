@@ -30,4 +30,5 @@ nmf:
     beta: 1.0      # 0: Itakura-Saito, 1: KL, 0 < beta < 1: Generalized KL  
     alpha: 1.0     # L1 regularization
     l1_ratio: 0.0   # L1 regularization ratio
+    num_samples: 10 # Number of samples to train on
 ## --------------------------------------------------------------------------

@@ -20,7 +20,8 @@ def train_nmf_dictionary(
         tol:float=1e-4, 
         beta:float=1.0, 
         alpha:float=0.0, 
-        l1_ratio:float=0.0
+        l1_ratio:float=0.0,
+        num_samples:int=10
     ):
     '''
     Train the NMF dictionary using torchnmf.
@@ -37,7 +38,7 @@ def train_nmf_dictionary(
     '''
     first_batch = next(iter(dataloader))[0]
     F = first_batch.shape[1]
-    B = torch.zeros(len(dataloader), F, K, device=device, dtype=torch.float32)
+    B = torch.zeros(num_samples, F, K, device=device, dtype=torch.float32)
     
     for i, (mixture, target, background) in enumerate(dataloader):
         print(f"Processing sample {i+1}/{len(dataloader)}")
@@ -58,6 +59,9 @@ def train_nmf_dictionary(
         del model
         if device == 'cuda':
             torch.cuda.empty_cache()
+
+        if i == num_samples - 1:
+            break
 
     # Final reshape and move to CPU before return
     result = B.reshape(F, -1)
@@ -123,8 +127,8 @@ def test_separation(
         torchaudio.save(f'{results_dir}/audio/predicted_background_{i}.wav', predicted_background_audio.unsqueeze(0), 16000, channels_first=True)
 
         # Save target and background masks
-        plt.imsave(f'{results_dir}/plots/target_mask_{i}.png', target_mask.detach().cpu().numpy(), cmap='viridis')
-        plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', background_mask.detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/target_mask_{i}.png', predicted_target.detach().cpu().numpy(), cmap='viridis')
+        plt.imsave(f'{results_dir}/plots/background_mask_{i}.png', predicted_background.detach().cpu().numpy(), cmap='viridis')
 
         # Evaluate on CPU
         reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).detach().cpu().numpy()
@@ -132,6 +136,12 @@ def test_separation(
 
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
+        # Remove nans   
+        sdr = sdr.nan_to_num()
+        isr = isr.nan_to_num()
+        sir = sir.nan_to_num()
+        sar = sar.nan_to_num()
+        perm = perm.nan_to_num()
         scores[i] = {
             'SDR': {
                 'target': round(float(sdr.mean(axis=1)[0]), 2),

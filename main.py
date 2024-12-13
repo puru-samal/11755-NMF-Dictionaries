@@ -55,7 +55,7 @@ def main(config_path):
     train_dataloader = DataLoader(
         dataset     = train_dataset, 
         batch_size  = config['dataloader']['batch_size'], 
-        shuffle     = config['dataloader']['shuffle'], 
+        shuffle     = True, 
         num_workers = config['dataloader']['num_workers'],
         collate_fn  = lambda x: batch_encode(
                 x, 
@@ -70,7 +70,7 @@ def main(config_path):
     test_dataloader = DataLoader(
         dataset     = test_dataset, 
         batch_size  = config['dataloader']['batch_size'],   
-        shuffle     = config['dataloader']['shuffle'], 
+        shuffle     = False, 
         num_workers = config['dataloader']['num_workers'],
         collate_fn  = lambda x: batch_encode(
                 x, 
@@ -105,6 +105,7 @@ def main(config_path):
         beta        = config['nmf']['beta'],
         alpha       = config['nmf']['alpha'],
         l1_ratio    = config['nmf']['l1_ratio'],
+        num_samples = config['nmf']['num_samples'],
     )
     print("Target NMF dictionary trained\n")
     ## --------------------------------------------------------------------------
