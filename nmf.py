@@ -9,7 +9,7 @@ import museval
 from typing import Callable
 import torchaudio
 import os
-
+import numpy as np
 def update(V, B, W, beta=2.0, alpha=0.0):
     """
     Perform one iteration of NMF update
@@ -233,16 +233,16 @@ def test_separation_semi(dataloader:torch.utils.data.DataLoader, B_target:torch.
         print(f"reference.shape: {reference.shape}, prediction.shape: {prediction.shape}")
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
-        scores['SDR_target'].append(sdr.mean(axis=1)[0])
-        scores['SDR_background'].append(sdr.mean(axis=1)[1])
-        scores['ISR_target'].append(isr.mean(axis=1)[0])
-        scores['ISR_background'].append(isr.mean(axis=1)[1])
-        scores['SIR_target'].append(sir.mean(axis=1)[0])
-        scores['SIR_background'].append(sir.mean(axis=1)[1])
-        scores['SAR_target'].append(sar.mean(axis=1)[0])
-        scores['SAR_background'].append(sar.mean(axis=1)[1])
-        scores['Perm_target'].append(perm.mean(axis=1)[0])
-        scores['Perm_background'].append(perm.mean(axis=1)[1])
+        scores['SDR_target'].append(np.nanmean(sdr, axis=1)[0])
+        scores['SDR_background'].append(np.nanmean(sdr, axis=1)[1])
+        scores['ISR_target'].append(np.nanmean(isr, axis=1)[0])
+        scores['ISR_background'].append(np.nanmean(isr, axis=1)[1])
+        scores['SIR_target'].append(np.nanmean(sir, axis=1)[0])
+        scores['SIR_background'].append(np.nanmean(sir, axis=1)[1])
+        scores['SAR_target'].append(np.nanmean(sar, axis=1)[0])
+        scores['SAR_background'].append(np.nanmean(sar, axis=1)[1])
+        scores['Perm_target'].append(np.nanmean(perm, axis=1)[0])
+        scores['Perm_background'].append(np.nanmean(perm, axis=1)[1])
 
         print(f"SDR_target: {round(float(scores['SDR_target'][-1]), 2)}, ISR_target: {round(float(scores['ISR_target'][-1]), 2)}, SIR_target: {round(float(scores['SIR_target'][-1]), 2)}, SAR_target: {round(float(scores['SAR_target'][-1]), 2)}, Perm_target: {round(float(scores['Perm_target'][-1]), 2)}")
         print(f"SDR_background: {round(float(scores['SDR_background'][-1]), 2)}, ISR_background: {round(float(scores['ISR_background'][-1]), 2)}, SIR_background: {round(float(scores['SIR_background'][-1]), 2)}, SAR_background: {round(float(scores['SAR_background'][-1]), 2)}, Perm_background: {round(float(scores['Perm_background'][-1]), 2)}\n\n")
@@ -328,18 +328,20 @@ def test_separation(dataloader:torch.utils.data.DataLoader, B_target:torch.Tenso
         reference = torch.stack([target_audio.reshape(-1,1), background_audio.reshape(-1,1)]).numpy()
         prediction = torch.stack([predicted_target_audio.reshape(-1,1), predicted_background_audio.reshape(-1,1)]).numpy()
         print(f"reference.shape: {reference.shape}, prediction.shape: {prediction.shape}")
+
         
         sdr, isr, sir, sar, perm = museval.metrics.bss_eval(reference, prediction)
-        scores['SDR_target'].append(sdr.mean(axis=1)[0])
-        scores['SDR_background'].append(sdr.mean(axis=1)[1])
-        scores['ISR_target'].append(isr.mean(axis=1)[0])
-        scores['ISR_background'].append(isr.mean(axis=1)[1])
-        scores['SIR_target'].append(sir.mean(axis=1)[0])
-        scores['SIR_background'].append(sir.mean(axis=1)[1])
-        scores['SAR_target'].append(sar.mean(axis=1)[0])
-        scores['SAR_background'].append(sar.mean(axis=1)[1])
-        scores['Perm_target'].append(perm.mean(axis=1)[0])
-        scores['Perm_background'].append(perm.mean(axis=1)[1])
+
+        scores['SDR_target'].append(np.nanmean(sdr, axis=1)[0])
+        scores['SDR_background'].append(np.nanmean(sdr, axis=1)[1])
+        scores['ISR_target'].append(np.nanmean(isr, axis=1)[0])
+        scores['ISR_background'].append(np.nanmean(isr, axis=1)[1])
+        scores['SIR_target'].append(np.nanmean(sir, axis=1)[0])
+        scores['SIR_background'].append(np.nanmean(sir, axis=1)[1])
+        scores['SAR_target'].append(np.nanmean(sar, axis=1)[0])
+        scores['SAR_background'].append(np.nanmean(sar, axis=1)[1])
+        scores['Perm_target'].append(np.nanmean(perm, axis=1)[0])
+        scores['Perm_background'].append(np.nanmean(perm, axis=1)[1])
 
         print(f"SDR_target: {round(float(scores['SDR_target'][-1]), 2)}, ISR_target: {round(float(scores['ISR_target'][-1]), 2)}, SIR_target: {round(float(scores['SIR_target'][-1]), 2)}, SAR_target: {round(float(scores['SAR_target'][-1]), 2)}, Perm_target: {round(float(scores['Perm_target'][-1]), 2)}")
         print(f"SDR_background: {round(float(scores['SDR_background'][-1]), 2)}, ISR_background: {round(float(scores['ISR_background'][-1]), 2)}, SIR_background: {round(float(scores['SIR_background'][-1]), 2)}, SAR_background: {round(float(scores['SAR_background'][-1]), 2)}, Perm_background: {round(float(scores['Perm_background'][-1]), 2)}\n\n")
