@@ -161,6 +161,7 @@ def test_separation_semi(dataloader:torch.utils.data.DataLoader, B_target:torch.
     '''
     Test the separation of the NMF dictionary.
     '''
+    B_target = B_target.to(device)
     os.makedirs(f'{results_dir}/audio', exist_ok=True)
     target_slice = slice(0, B_target.shape[-1])
     B_background = torch.abs(torch.rand(B_target.shape[0], background_k, device=device))
